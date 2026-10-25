@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    
+    environment {
+        IMAGE_NAME = 'slyytata/jenapps'
+        IMAGE_TAG = "${IMAGE_NAME}:${env.GIT_COMMIT}"
+    }
+
+    stages {
+        stage('Test') {
+            steps {
+                sh 'pytest'
+            }
+        }
+        stage('Login To DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'USERNAME' , passwordVariable: 'PASSWORD')]) {
+                    sh 'echo ${PASSWORD} | docker login -u ${USERNAME} '
+                }
+                echo "Login Suceeded"
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t ${IMAGE_NAME} .'
+                echo "Docker Image Build Successfully"
+                sh 'docker image ls'
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                sh "docker push ${IMAGE_TAG}"
+            }
+        }
+    }
+}

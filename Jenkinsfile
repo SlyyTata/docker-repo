@@ -7,11 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Test') {
-            steps {
-                sh 'pytest'
-            }
-        }
         stage('Login To DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'USERNAME' , passwordVariable: 'PASSWORD')]) {

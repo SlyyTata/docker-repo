@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME} .'
+                sh 'docker build -t ${IMAGE_TAG} .'
                 echo "Docker Image Build Successfully"
                 sh 'docker image ls'
             }

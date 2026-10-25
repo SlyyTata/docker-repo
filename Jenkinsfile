@@ -1,5 +1,9 @@
 pipeline {
     agent any
+
+    triggers {
+        githubPush() // 👈 Tells Jenkins to listen for incoming GitHub webhook payloads
+    }
     
     environment {
         IMAGE_NAME = 'slyytata/jenapps'
@@ -7,6 +11,11 @@ pipeline {
     }
 
     stages {
+        stage('Test') {
+            steps {
+                sh "pytest"
+            }
+        }
         stage('Login To DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'USERNAME' , passwordVariable: 'PASSWORD')]) {
